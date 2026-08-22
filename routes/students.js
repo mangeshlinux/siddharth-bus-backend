@@ -119,7 +119,7 @@ router.post('/', authMiddleware, ownerOnly, async (req, res) => {
     res.status(201).json(result);
   } catch (error) {
     console.error('Add student error:', error);
-    res.status(500).json({ error: 'Failed to add student.' });
+    res.status(500).json({ error: error.message || 'Failed to add student.' });
   }
 });
 
