@@ -13,8 +13,8 @@ const getOwnerConfig = () => ({
   whatsappNumber: '918767948553',
   email: 'siddharth.travels.nashik@gmail.com',
   officeAddress: 'Shop No. 4, Shree Samarth Plaza, Near College Road, Nashik - 422005',
-  adminPin: process.env.OWNER_PIN || '9999',
-  secretPass: process.env.OWNER_SECRET_PASS || 'siddharth2026',
+  adminPin: process.env.OWNER_PIN,
+  secretPass: process.env.OWNER_SECRET_PASS,
   estYear: '2017',
   city: 'Nashik'
 });
@@ -46,6 +46,11 @@ router.post('/parent-login', async (req, res) => {
         success: false,
         error: 'No student records found for this mobile number. Please check the number or contact Siddharth Travels.'
       });
+    }
+
+    if (!process.env.JWT_SECRET) {
+      console.error('JWT_SECRET is not configured in environment variables.');
+      return res.status(500).json({ success: false, error: 'Authentication service configuration error.' });
     }
 
     // Issue JWT token (7 days for parents)
@@ -87,7 +92,25 @@ router.post('/owner-login', async (req, res) => {
     const { pin } = req.body;
     const config = getOwnerConfig();
 
-    if (pin !== config.adminPin && pin !== config.secretPass) {
+    if (!config.adminPin && !config.secretPass) {
+      console.error('Owner authentication credentials (OWNER_PIN / OWNER_SECRET_PASS) are not configured.');
+      return res.status(500).json({
+        success: false,
+        error: 'Owner authentication is not configured on the server.'
+      });
+    }
+
+    if (!process.env.JWT_SECRET) {
+      console.error('JWT_SECRET is not configured in environment variables.');
+      return res.status(500).json({
+        success: false,
+        error: 'Authentication service configuration error.'
+      });
+    }
+
+    const isPinValid = (config.adminPin && pin === config.adminPin) || (config.secretPass && pin === config.secretPass);
+
+    if (!isPinValid) {
       return res.status(401).json({
         success: false,
         error: 'Invalid Owner Access PIN / Password.'
