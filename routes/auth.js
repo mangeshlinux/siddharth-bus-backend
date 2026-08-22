@@ -129,6 +129,9 @@ router.post('/owner-login', async (req, res) => {
       { expiresIn: '24h' }
     );
 
+    const allStudents = await Student.find().sort({ createdAt: -1 }).lean();
+    const studentsWithId = allStudents.map(s => ({ ...s, id: s._id.toString() }));
+
     res.json({
       success: true,
       token,
@@ -137,7 +140,8 @@ router.post('/owner-login', async (req, res) => {
         name: config.name,
         businessName: config.businessName,
         phone: config.primaryPhone
-      }
+      },
+      students: studentsWithId
     });
   } catch (error) {
     console.error('Owner login error:', error);
@@ -150,6 +154,13 @@ router.post('/owner-login', async (req, res) => {
 router.get('/me', authMiddleware, async (req, res) => {
   try {
     const userData = { ...req.user };
+
+    // If owner, fetch all students
+    if (req.user.role === 'OWNER') {
+      const students = await Student.find().sort({ createdAt: -1 }).lean();
+      const studentsWithId = students.map(s => ({ ...s, id: s._id.toString() }));
+      return res.json({ success: true, user: userData, students: studentsWithId });
+    }
 
     // If parent, also fetch their latest student data
     if (req.user.role === 'PARENT') {
