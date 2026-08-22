@@ -39,8 +39,10 @@ app.use('/api/fleet', fleetRoutes);
 
 // ─── Health Check ───
 app.get('/api/health', (req, res) => {
+  const isDbConnected = require('mongoose').connection.readyState === 1;
   res.json({
-    status: 'OK',
+    status: isDbConnected ? 'OK' : 'DEGRADED',
+    database: isDbConnected ? 'Connected to MongoDB Atlas' : 'Disconnected (Check Render Environment Variables for MONGODB_URI)',
     service: 'Siddharth School Bus & Travels API',
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development'
