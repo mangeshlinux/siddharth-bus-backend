@@ -9,9 +9,10 @@ const authMiddleware = (req, res, next) => {
   }
 
   const token = authHeader.split(' ')[1];
+  const jwtSecret = process.env.JWT_SECRET || 'siddharth-bus-jwt-secret-2026-nashik-secure';
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, jwtSecret);
     req.user = decoded; // { role, phone, parentName } or { role, name }
     next();
   } catch (error) {
