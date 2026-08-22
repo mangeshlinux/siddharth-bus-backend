@@ -94,7 +94,7 @@ router.post('/:studentId', authMiddleware, ownerOnly, async (req, res) => {
     });
   } catch (error) {
     console.error('Record payment error:', error);
-    res.status(500).json({ error: 'Failed to record payment.' });
+    res.status(500).json({ error: error.message || 'Failed to record payment.' });
   }
 });
 

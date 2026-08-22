@@ -252,7 +252,7 @@ router.post('/bulk-import', authMiddleware, ownerOnly, async (req, res) => {
     res.status(201).json({ success: true, count: result.length, students: result });
   } catch (error) {
     console.error('Bulk import error:', error);
-    res.status(500).json({ error: 'Failed to import students.' });
+    res.status(500).json({ error: error.message || 'Failed to import students.' });
   }
 });
 
@@ -288,7 +288,7 @@ router.put('/bulk-fee', authMiddleware, ownerOnly, async (req, res) => {
     res.json({ success: true, updated: updates.filter(Boolean).length });
   } catch (error) {
     console.error('Bulk fee error:', error);
-    res.status(500).json({ error: 'Failed to update fees.' });
+    res.status(500).json({ error: error.message || 'Failed to update fees.' });
   }
 });
 
@@ -310,7 +310,7 @@ router.put('/bulk-stop', authMiddleware, ownerOnly, async (req, res) => {
     res.json({ success: true, message: `Updated ${studentIds.length} students.` });
   } catch (error) {
     console.error('Bulk stop error:', error);
-    res.status(500).json({ error: 'Failed to update stops.' });
+    res.status(500).json({ error: error.message || 'Failed to update stops.' });
   }
 });
 

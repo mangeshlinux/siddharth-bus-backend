@@ -41,7 +41,7 @@ router.post('/', authMiddleware, ownerOnly, async (req, res) => {
     res.status(201).json(result);
   } catch (error) {
     console.error('Broadcast notice error:', error);
-    res.status(500).json({ error: 'Failed to broadcast notice.' });
+    res.status(500).json({ error: error.message || 'Failed to broadcast notice.' });
   }
 });
 
@@ -56,7 +56,7 @@ router.delete('/:id', authMiddleware, ownerOnly, async (req, res) => {
     res.json({ success: true, message: 'Notice deleted.' });
   } catch (error) {
     console.error('Delete notice error:', error);
-    res.status(500).json({ error: 'Failed to delete notice.' });
+    res.status(500).json({ error: error.message || 'Failed to delete notice.' });
   }
 });
 
@@ -68,7 +68,7 @@ router.delete('/', authMiddleware, ownerOnly, async (req, res) => {
     res.json({ success: true, message: 'All notices cleared.' });
   } catch (error) {
     console.error('Clear notices error:', error);
-    res.status(500).json({ error: 'Failed to clear notices.' });
+    res.status(500).json({ error: error.message || 'Failed to clear notices.' });
   }
 });
 
