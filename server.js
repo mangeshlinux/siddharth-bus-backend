@@ -73,7 +73,7 @@ app.use((err, req, res, next) => {
 });
 
 // ─── Start Server ───
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`\n🚌 Siddharth School Bus API running on port ${PORT}`);
   console.log(`   Health: http://localhost:${PORT}/api/health`);
   console.log(`   CORS allowed: ${process.env.FRONTEND_URL || 'http://localhost:5173'}\n`);
