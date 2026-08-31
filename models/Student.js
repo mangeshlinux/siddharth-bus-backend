@@ -6,6 +6,7 @@ const paymentRecordSchema = new mongoose.Schema({
   date: { type: String, required: true },
   mode: { type: String, default: 'UPI' },
   term: { type: String, default: 'School Bus Transport Term Fee' },
+  clearedMonths: [{ type: String }],
   notes: { type: String, default: '' }
 }, { _id: true });
 
@@ -14,6 +15,7 @@ const feeDetailsSchema = new mongoose.Schema({
   paidAmount: { type: Number, default: 0 },
   dueAmount: { type: Number, default: 30000 },
   status: { type: String, enum: ['PAID', 'PARTIAL', 'DUE'], default: 'DUE' },
+  clearedMonthsList: [{ type: String }],
   phase1Amount: { type: Number },
   phase1Paid: { type: Number, default: 0 },
   phase1Status: { type: String, enum: ['PAID', 'PARTIAL', 'DUE'], default: 'DUE' },

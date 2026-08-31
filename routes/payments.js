@@ -10,7 +10,7 @@ const router = express.Router();
 // Owner only: Record a payment for a student
 router.post('/:studentId', authMiddleware, ownerOnly, async (req, res) => {
   try {
-    const { amount, mode = 'UPI', term = 'School Bus Transport Term Fee', notes = '' } = req.body;
+    const { amount, mode = 'UPI', term = 'School Bus Transport Term Fee', clearedMonths = [], notes = '' } = req.body;
     const numericAmount = Number(amount);
 
     if (!numericAmount || numericAmount <= 0) {
@@ -42,8 +42,19 @@ router.post('/:studentId', authMiddleware, ownerOnly, async (req, res) => {
       date: today,
       mode,
       term,
+      clearedMonths,
       notes
     };
+
+    // Merge cleared months into student feeDetails
+    if (Array.isArray(clearedMonths) && clearedMonths.length > 0) {
+      if (!student.feeDetails.clearedMonthsList) student.feeDetails.clearedMonthsList = [];
+      clearedMonths.forEach(m => {
+        if (!student.feeDetails.clearedMonthsList.includes(m)) {
+          student.feeDetails.clearedMonthsList.push(m);
+        }
+      });
+    }
 
     student.feeDetails.paidAmount = newPaid;
     student.feeDetails.dueAmount = newDue;
@@ -59,28 +70,6 @@ router.post('/:studentId', authMiddleware, ownerOnly, async (req, res) => {
     student.feeDetails.paymentsHistory.unshift(paymentRecord);
 
     await student.save();
-
-    // Auto-broadcast payment confirmation notice
-    const paymentNotice = new Notice({
-      title: `Payment Confirmed: ${student.studentName}`,
-      content: `Official payment of ₹${numericAmount.toLocaleString('en-IN')} for ${student.studentName} (${student.schoolName}) has been verified & confirmed by Siddharth Shardul. Receipt #${receiptNo} is now ready for download.`,
-      target: 'Individual Parent',
-      type: 'PAYMENT_CONFIRMATION',
-      date: today,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      urgent: false,
-      isPaymentReceipt: true,
-      receiptData: {
-        receiptNo,
-        amount: numericAmount,
-        date: today,
-        mode,
-        term,
-        student: student.toObject()
-      }
-    });
-
-    await paymentNotice.save();
 
     const result = student.toObject();
     result.id = result._id.toString();

@@ -9,12 +9,14 @@ const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'siddharth-bus-jwt-secret-2026-nashik-secure';
 
 const getOwnerConfig = () => ({
-  name: 'Siddharth Shardul',
+  name: 'Siddharth Kailas Shardul',
   businessName: 'Siddharth School Bus & Travels',
-  primaryPhone: '8767948553',
-  whatsappNumber: '918767948553',
-  email: 'siddharth.travels.nashik@gmail.com',
-  officeAddress: 'Shop No. 4, Shree Samarth Plaza, Near College Road, Nashik - 422005',
+  primaryPhone: '8446391127',
+  whatsappNumber: '918446391127',
+  email: 'siddharthshardul96@gmail.com',
+  instagram: 'https://www.instagram.com/siddhshardul2?igsi=MWRnaTM5aWF0c25hdg==',
+  instagramHandle: '@siddhshardul2',
+  officeAddress: 'Plot No 49, Vithu Mauli Colony Lane No 1, Swami Vivekanand Nagar, Makhamalabad, Nashik',
   adminPin: process.env.OWNER_PIN || '0081',
   secretPass: process.env.OWNER_SECRET_PASS || 'siddhu',
   estYear: '2017',

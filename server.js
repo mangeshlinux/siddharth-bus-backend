@@ -52,12 +52,14 @@ app.get('/api/health', (req, res) => {
 // ─── Owner Config (Public — used by frontend for display) ───
 app.get('/api/config', (req, res) => {
   res.json({
-    name: 'Siddharth Shardul',
+    name: 'Siddharth Kailas Shardul',
     businessName: 'Siddharth School Bus & Travels',
-    primaryPhone: '8767948553',
-    whatsappNumber: '918767948553',
-    email: 'siddharth.travels.nashik@gmail.com',
-    officeAddress: 'Shop No. 4, Shree Samarth Plaza, Near College Road, Nashik - 422005',
+    primaryPhone: '8446391127',
+    whatsappNumber: '918446391127',
+    email: 'siddharthshardul96@gmail.com',
+    instagram: 'https://www.instagram.com/siddhshardul2?igsi=MWRnaTM5aWF0c25hdg==',
+    instagramHandle: '@siddhshardul2',
+    officeAddress: 'Plot No 49, Vithu Mauli Colony Lane No 1, Swami Vivekanand Nagar, Makhamalabad, Nashik',
     estYear: '2017',
     city: 'Nashik'
   });
