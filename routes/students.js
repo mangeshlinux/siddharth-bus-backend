@@ -145,13 +145,33 @@ router.put('/:id', authMiddleware, ownerOnly, async (req, res) => {
       const paid = Number(updates.feeDetails.paidAmount ?? student.feeDetails.paidAmount);
       const due = Math.max(0, total - paid);
 
+      const p1Target = updates.feeDetails.phase1Amount ?? student.feeDetails.phase1Amount ?? Math.round(total / 2);
+      const p2Target = total - p1Target;
+      const p1Paid = Math.min(paid, p1Target);
+      const p2Paid = Math.max(0, paid - p1Target);
+
+      let clearedMonthsList = updates.feeDetails.clearedMonthsList ?? student.feeDetails.clearedMonthsList ?? [];
+      if (Array.isArray(updates.feeDetails.monthlyCoverage)) {
+        clearedMonthsList = updates.feeDetails.monthlyCoverage
+          .filter(m => m.status === 'PAID')
+          .map(m => m.fullName);
+      }
+
       updates.feeDetails = {
         ...student.feeDetails.toObject(),
         ...updates.feeDetails,
         totalAnnualFee: total,
         paidAmount: paid,
         dueAmount: due,
-        status: due === 0 ? 'PAID' : (paid > 0 ? 'PARTIAL' : 'DUE')
+        status: due === 0 ? 'PAID' : (paid > 0 ? 'PARTIAL' : 'DUE'),
+        phase1Amount: p1Target,
+        phase1Paid: p1Paid,
+        phase1Status: p1Paid >= p1Target ? 'PAID' : (p1Paid > 0 ? 'PARTIAL' : 'DUE'),
+        phase2Amount: p2Target,
+        phase2Paid: p2Paid,
+        phase2Status: p2Paid >= p2Target ? 'PAID' : (p2Paid > 0 ? 'PARTIAL' : 'DUE'),
+        clearedMonthsList,
+        nextDueDate: due === 0 ? 'Fully Paid for 2026-27' : (updates.feeDetails.nextDueDate || student.feeDetails.nextDueDate || '2026-10-15 (Phase 2 Due)')
       };
     }
 

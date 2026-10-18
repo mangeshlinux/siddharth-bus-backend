@@ -10,12 +10,24 @@ const paymentRecordSchema = new mongoose.Schema({
   notes: { type: String, default: '' }
 }, { _id: true });
 
+const monthCoverageItemSchema = new mongoose.Schema({
+  month: { type: String, required: true },
+  fullName: { type: String, required: true },
+  monthIndex: { type: Number },
+  status: { type: String, enum: ['PAID', 'DUE', 'PARTIAL', 'WAIVED'], default: 'DUE' },
+  paidAmount: { type: Number, default: 0 },
+  targetAmount: { type: Number, default: 0 },
+  notes: { type: String, default: '' },
+  updatedAt: { type: String, default: null }
+}, { _id: false });
+
 const feeDetailsSchema = new mongoose.Schema({
   totalAnnualFee: { type: Number, default: 30000 },
   paidAmount: { type: Number, default: 0 },
   dueAmount: { type: Number, default: 30000 },
   status: { type: String, enum: ['PAID', 'PARTIAL', 'DUE'], default: 'DUE' },
   clearedMonthsList: [{ type: String }],
+  monthlyCoverage: [monthCoverageItemSchema],
   phase1Amount: { type: Number },
   phase1Paid: { type: Number, default: 0 },
   phase1Status: { type: String, enum: ['PAID', 'PARTIAL', 'DUE'], default: 'DUE' },

@@ -54,6 +54,16 @@ router.post('/:studentId', authMiddleware, ownerOnly, async (req, res) => {
           student.feeDetails.clearedMonthsList.push(m);
         }
       });
+
+      if (Array.isArray(student.feeDetails.monthlyCoverage) && student.feeDetails.monthlyCoverage.length > 0) {
+        student.feeDetails.monthlyCoverage.forEach(item => {
+          if (clearedMonths.includes(item.month) || clearedMonths.includes(item.fullName)) {
+            item.status = 'PAID';
+            item.paidAmount = item.targetAmount || 0;
+            item.updatedAt = today;
+          }
+        });
+      }
     }
 
     student.feeDetails.paidAmount = newPaid;
